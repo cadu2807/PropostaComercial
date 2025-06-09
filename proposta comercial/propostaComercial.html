@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proposta de Design | Blezz Agency</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Warm Neutral Harmony -->
+    <!-- Application Structure Plan: The SPA is designed as a single-page marketing funnel. It starts with a strong Hero section to capture attention, followed by a 'Diferencial' section to build trust. The core is the interactive 'Pacotes' section, where users can click to select a plan, which dynamically updates a details area and a comparative bar chart, facilitating easy comparison and decision-making. This flows into 'Próximos Passos' to guide the user, and ends with a clear 'Contato' call-to-action. This structure was chosen to guide the user from interest to action in a logical, engaging flow, superior to a static document. -->
+    <!-- Visualization & Content Choices: 
+        - Report Info: 'Nossos Pacotes' (prices and services). Goal: Compare. Viz/Method: Interactive cards and a dynamic bar chart (Chart.js). Interaction: User clicks a package card, the UI highlights it, package details are displayed, and the chart updates to visually compare the cost vs. benefit (number of posts). Justification: This transforms a static price list into an engaging decision-making tool, making value more apparent.
+        - Report Info: 'Nosso Diferencial'. Goal: Inform. Viz/Method: Grid of cards with icons (HTML/CSS/Unicode). Interaction: Subtle hover effects. Justification: Enhances scannability and visual appeal.
+        - Report Info: 'Próximos Passos'. Goal: Organize. Viz/Method: Numbered list styled as a visual timeline (HTML/CSS). Justification: Clearly presents the client onboarding process.
+        - Library/Method: All visualizations and interactions are built with TailwindCSS, Vanilla JS, and Chart.js, confirming no SVG or Mermaid JS is used.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+        .package-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .package-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .package-card.selected {
+            border-color: #fb923c; /* orange-400 */
+            transform: translateY(-8px);
+            box-shadow: 0 10px 15px -3px rgba(251, 146, 60, 0.2), 0 4px 6px -2px rgba(251, 146, 60, 0.1);
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 40vh;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+        .btn-primary {
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body class="bg-stone-50 text-stone-800">
+
+    <header class="bg-stone-100/80 backdrop-blur-sm sticky top-0 z-50 shadow-sm">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="text-2xl font-bold text-orange-500">
+                <a href="#">Blezz Agency</a>
+            </div>
+            <div class="hidden md:flex space-x-6">
+                <a href="#diferencial" class="text-stone-600 hover:text-orange-500">Nosso Diferencial</a>
+                <a href="#pacotes" class="text-stone-600 hover:text-orange-500">Pacotes</a>
+                <a href="#contato" class="text-stone-600 hover:text-orange-500">Contato</a>
+            </div>
+            <a href="#contato" class="hidden md:block bg-orange-500 text-white font-semibold px-5 py-2 rounded-lg shadow-md hover:bg-orange-600 btn-primary">Vamos Conversar</a>
+        </nav>
+    </header>
+
+    <main>
+        <section id="hero" class="py-20 md:py-32 bg-stone-100">
+            <div class="container mx-auto px-6 text-center">
+                <h1 class="text-4xl md:text-6xl font-bold text-stone-800 mb-4 leading-tight">Alavanque seu Negócio com um Design Estratégico</h1>
+                <p class="text-lg md:text-xl text-stone-600 max-w-3xl mx-auto mb-8">Transformamos sua presença digital com designs que comunicam, conectam com seu público e impulsionam seus resultados.</p>
+                <a href="#pacotes" class="bg-orange-500 text-white font-bold px-8 py-4 rounded-lg shadow-lg hover:bg-orange-600 btn-primary text-lg">Conheça Nossos Planos</a>
+            </div>
+        </section>
+
+        <section id="diferencial" class="py-16 md:py-24">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold">Nosso Diferencial</h2>
+                    <p class="text-stone-600 mt-2">Por que escolher a Blezz Agency?</p>
+                </div>
+                <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <div class="bg-white p-8 rounded-xl shadow-md border border-stone-200 text-center">
+                        <div class="text-4xl text-orange-500 mb-4">🎯</div>
+                        <h3 class="text-xl font-bold mb-2">Design Focado em Resultados</h3>
+                        <p class="text-stone-600">Não criamos apenas "artes bonitas". Cada peça tem um objetivo claro: gerar cliques, vendas e engajamento.</p>
+                    </div>
+                    <div class="bg-white p-8 rounded-xl shadow-md border border-stone-200 text-center">
+                        <div class="text-4xl text-orange-500 mb-4">🤝</div>
+                        <h3 class="text-xl font-bold mb-2">Atendimento Personalizado</h3>
+                        <p class="text-stone-600">Entendemos suas necessidades e criamos um plano de ação específico para os seus objetivos.</p>
+                    </div>
+                    <div class="bg-white p-8 rounded-xl shadow-md border border-stone-200 text-center">
+                        <div class="text-4xl text-orange-500 mb-4">🔍</div>
+                        <h3 class="text-xl font-bold mb-2">Processo Transparente</h3>
+                        <p class="text-stone-600">Você acompanha cada etapa, garantindo que o resultado final esteja 100% alinhado com suas expectativas.</p>
+                    </div>
+                    <div class="bg-white p-8 rounded-xl shadow-md border border-stone-200 text-center">
+                        <div class="text-4xl text-orange-500 mb-4">💰</div>
+                        <h3 class="text-xl font-bold mb-2">Investimento Inteligente</h3>
+                        <p class="text-stone-600">Oferecemos pacotes com excelente custo-benefício para que seu investimento tenha o maior retorno.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="pacotes" class="py-16 md:py-24 bg-stone-100">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold">Pacotes Feitos Para Você</h2>
+                    <p class="text-stone-600 mt-2">Clique em um pacote para ver os detalhes e comparar o valor.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+                    <div id="package-0" class="package-card bg-white p-6 rounded-xl shadow-lg border-2 border-transparent cursor-pointer">
+                        <h3 class="text-2xl font-bold text-stone-700">Bronze</h3>
+                        <p class="text-stone-500">Essencial</p>
+                        <p class="text-4xl font-bold my-4">R$250<span class="text-lg font-normal text-stone-500">/mês</span></p>
+                        <p class="text-sm text-stone-600">Ideal para quem está começando e precisa de consistência.</p>
+                    </div>
+                    <div id="package-1" class="package-card bg-white p-6 rounded-xl shadow-lg border-2 border-transparent cursor-pointer">
+                        <h3 class="text-2xl font-bold text-stone-700">Silver</h3>
+                        <p class="text-stone-500">Intermediário</p>
+                        <p class="text-4xl font-bold my-4">R$500<span class="text-lg font-normal text-stone-500">/mês</span></p>
+                        <p class="text-sm text-stone-600">Perfeito para acelerar o crescimento e o engajamento.</p>
+                    </div>
+                    <div id="package-2" class="package-card bg-white p-6 rounded-xl shadow-lg border-2 border-transparent cursor-pointer">
+                        <h3 class="text-2xl font-bold text-stone-700">Gold</h3>
+                        <p class="text-stone-500">Completo</p>
+                        <p class="text-4xl font-bold my-4">R$750<span class="text-lg font-normal text-stone-500">/mês</span></p>
+                        <p class="text-sm text-stone-600">A solução completa para dominar seu nicho de mercado.</p>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-xl p-8 lg:p-12 grid lg:grid-cols-2 gap-8 items-center">
+                    <div>
+                        <h3 class="text-2xl font-bold mb-4" id="package-details-title">Detalhes do Pacote</h3>
+                        <ul id="package-details-list" class="space-y-3 text-stone-600">
+                        </ul>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="packagesChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="passos" class="py-16 md:py-24">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold">Próximos Passos</h2>
+                    <p class="text-stone-600 mt-2">Nosso processo para começar a transformar seu negócio.</p>
+                </div>
+                <div class="max-w-3xl mx-auto grid md:grid-cols-3 gap-4 text-center">
+                    <div class="p-4">
+                        <div class="flex items-center justify-center bg-orange-500 text-white w-16 h-16 rounded-full text-2xl font-bold mx-auto mb-4">1</div>
+                        <h3 class="font-bold text-xl mb-2">Análise</h3>
+                        <p class="text-stone-600">Avalie os pacotes e escolha o ideal para seus objetivos.</p>
+                    </div>
+                     <div class="p-4">
+                        <div class="flex items-center justify-center bg-orange-500 text-white w-16 h-16 rounded-full text-2xl font-bold mx-auto mb-4">2</div>
+                        <h3 class="font-bold text-xl mb-2">Reunião</h3>
+                        <p class="text-stone-600">Agende uma conversa para alinharmos todos os detalhes do projeto.</p>
+                    </div>
+                     <div class="p-4">
+                        <div class="flex items-center justify-center bg-orange-500 text-white w-16 h-16 rounded-full text-2xl font-bold mx-auto mb-4">3</div>
+                        <h3 class="font-bold text-xl mb-2">Lançamento</h3>
+                        <p class="text-stone-600">Após a aprovação, iniciamos o planejamento e a criação da sua nova presença digital!</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+    
+    <footer id="contato" class="bg-stone-800 text-white py-16">
+        <div class="container mx-auto px-6 text-center">
+            <h2 class="text-3xl font-bold mb-4">Vamos crescer juntos?</h2>
+            <p class="text-stone-300 max-w-xl mx-auto mb-8">Entre em contato e vamos dar o próximo passo para alavancar seu negócio.</p>
+            <div class="flex flex-wrap justify-center items-center gap-6 md:gap-8 mb-8 text-lg">
+                <a href="tel:+5567991459350" class="hover:text-orange-400">📞 (67) 9 9145-9350</a>
+                <a href="https://instagram.com/blezzagency" target="_blank" class="hover:text-orange-400">📸 @blezzagency</a>
+                <a href="mailto:blezzagency@gmail.com" class="hover:text-orange-400">✉️ blezzagency@gmail.com</a>
+            </div>
+             <p class="text-stone-400 mt-12">&copy; 2025 Blezz Agency | Criado por Carlos Eduardo de Almeida.</p>
+        </div>
+    </footer>
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const packagesData = [
+                {
+                    name: 'Bronze',
+                    price: 250,
+                    posts: 10,
+                    features: [
+                        '10 Posts Mensais para o Feed',
+                        'Criação de Legendas (Copywriting)',
+                        'Planejamento de Conteúdo Mensal',
+                        'Suporte via WhatsApp'
+                    ]
+                },
+                {
+                    name: 'Silver',
+                    price: 500,
+                    posts: 20,
+                    features: [
+                        '20 Posts Mensais (Feed e Stories)',
+                        'Criação de Legendas (Copywriting)',
+                        'Gestão de Tráfego Básico',
+                        'Relatório Mensal Simplificado',
+                        'Suporte Prioritário via WhatsApp'
+                    ]
+                },
+                {
+                    name: 'Gold',
+                    price: 750,
+                    posts: 30,
+                    features: [
+                        '30+ Conteúdos Mensais (Feed, Stories, Reels)',
+                        'Criação de Legendas e Roteiros',
+                        'Gestão de Tráfego Avançada',
+                        'Relatório Mensal Detalhado',
+                        'Reunião Estratégica Mensal',
+                        'Suporte Premium'
+                    ]
+                }
+            ];
+
+            const packageCards = document.querySelectorAll('.package-card');
+            const detailsTitle = document.getElementById('package-details-title');
+            const detailsList = document.getElementById('package-details-list');
+            
+            let chart;
+
+            function createOrUpdateChart(selectedIndex) {
+                const ctx = document.getElementById('packagesChart').getContext('2d');
+                
+                const backgroundColors = packagesData.map((_, index) => index === selectedIndex ? 'rgba(251, 146, 60, 0.8)' : 'rgba(203, 213, 225, 0.5)');
+                const borderColors = packagesData.map((_, index) => index === selectedIndex ? 'rgba(251, 146, 60, 1)' : 'rgba(203, 213, 225, 1)');
+
+
+                const data = {
+                    labels: packagesData.map(p => p.name),
+                    datasets: [
+                        {
+                            label: 'Conteúdos Mensais',
+                            data: packagesData.map(p => p.posts),
+                            backgroundColor: backgroundColors,
+                            borderColor: borderColors,
+                            borderWidth: 2,
+                            yAxisID: 'yPosts',
+                        },
+                        {
+                            label: 'Investimento (R$)',
+                            data: packagesData.map(p => p.price),
+                            backgroundColor: 'rgba(51, 65, 85, 0.1)',
+                            borderColor: 'rgba(51, 65, 85, 0.3)',
+                            borderWidth: 1,
+                            type: 'line',
+                            yAxisID: 'yPrice',
+                            tension: 0.2
+                        }
+                    ]
+                };
+
+                const options = {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        yPosts: {
+                            type: 'linear',
+                            position: 'left',
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Quantidade de Conteúdos'
+                            }
+                        },
+                        yPrice: {
+                             type: 'linear',
+                             position: 'right',
+                             beginAtZero: true,
+                             grid: {
+                                 drawOnChartArea: false, 
+                             },
+                             title: {
+                                display: true,
+                                text: 'Investimento Mensal (R$)'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: true
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.parsed.y !== null) {
+                                        if(context.dataset.yAxisID === 'yPrice'){
+                                           label += new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(context.parsed.y);
+                                        } else {
+                                           label += context.parsed.y;
+                                        }
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    },
+                    interaction: {
+                        mode: 'index',
+                        intersect: false,
+                    },
+                };
+
+                if (chart) {
+                    chart.data.datasets[0].backgroundColor = backgroundColors;
+                    chart.data.datasets[0].borderColor = borderColors;
+                    chart.update();
+                } else {
+                    chart = new Chart(ctx, { type: 'bar', data, options });
+                }
+            }
+
+            function selectPackage(index) {
+                const selectedPackage = packagesData[index];
+
+                packageCards.forEach((card, i) => {
+                    if (i === index) {
+                        card.classList.add('selected');
+                    } else {
+                        card.classList.remove('selected');
+                    }
+                });
+
+                detailsTitle.textContent = `Detalhes do Pacote ${selectedPackage.name}`;
+                detailsList.innerHTML = '';
+                selectedPackage.features.forEach(feature => {
+                    const li = document.createElement('li');
+                    li.innerHTML = `<span class="text-orange-500 font-bold mr-2">✓</span> ${feature}`;
+                    detailsList.appendChild(li);
+                });
+
+                createOrUpdateChart(index);
+            }
+
+            packageCards.forEach((card, index) => {
+                card.addEventListener('click', () => {
+                    selectPackage(index);
+                });
+            });
+
+            selectPackage(1);
+            
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    document.querySelector(this.getAttribute('href')).scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                });
+            });
+        });
+    </script>
+</body>
+</html>
